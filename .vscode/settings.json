@@ -1,0 +1,5 @@
+{
+  "python.pythonPath": "/Users/chris/Code/pybadge/circuitpython/alphabet-practice/.env/bin/python3",
+  "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true
+}
