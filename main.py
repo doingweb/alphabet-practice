@@ -40,8 +40,7 @@ def displayLetter():
   backgroundBitmap = displayio.Bitmap(DISPLAY.width, DISPLAY.height, PALETTE_SIZE)
   background = displayio.TileGrid(backgroundBitmap, pixel_shader=palette)
 
-  text = letter
-  textLabel = label.Label(FONT, text=text, color=palette[1])
+  textLabel = label.Label(FONT, text=letter, color=palette[1])
   textLabel.anchor_point = (0.5, 0.5)
   textLabel.anchored_position = (DISPLAY.width / 2, DISPLAY.height / 2)
 
@@ -52,22 +51,24 @@ def displayLetter():
 
   DISPLAY.show(group)
 
-def goToLetter(newIndex):
-  global letterIndex
-  letterIndex = newIndex
-  displayLetter()
+  preloadLetter(alphabet[nextIndex()])
+  preloadLetter(alphabet[previousIndex()])
+
+def nextIndex():
+  return letterIndex + 1 if letterIndex < len(alphabet) - 1 else 0
+
+def previousIndex():
+  return letterIndex - 1 if letterIndex > 0 else len(alphabet) - 1
 
 def forwardLetter():
-  if letterIndex == len(alphabet) - 1:
-    goToLetter(0)
-  else:
-    goToLetter(letterIndex + 1)
+  global letterIndex
+  letterIndex = nextIndex()
+  displayLetter()
 
 def backLetter():
-  if letterIndex == 0:
-    goToLetter(len(alphabet) - 1)
-  else:
-    goToLetter(letterIndex - 1)
+  global letterIndex
+  letterIndex = previousIndex()
+  displayLetter()
 
 def switchLetterCase():
   global alphabet
@@ -75,7 +76,14 @@ def switchLetterCase():
 
 def selectRandomPalette():
   global paletteIndex
-  paletteIndex = random.randint(0, len(COLOR_PALETTES) - 1)
+  previousPaletteIndex = paletteIndex
+
+  while paletteIndex == previousPaletteIndex:
+    paletteIndex = random.randint(0, len(COLOR_PALETTES) - 1)
+
+def preloadLetter(letter):
+  label.Label(FONT, text=letter)
+  print(letter, end='')
 
 displayLetter()
 
