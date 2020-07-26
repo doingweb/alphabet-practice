@@ -27,17 +27,18 @@ Open FontForge:
 ```
 
 1. Copy out the letter glyphs and paste into a new font.
-2. Run _Bitmap Strikes Available..._ (`cmd+shift+B`) and set pixel size to `100`.
-3. Run _Regenerate Bitmap Glyphs..._ (`cmd-B`) and keep pixel size to `100`.
+2. Run _Bitmap Strikes Available..._ (`cmd+shift+B`) and set Pixel Sizes to `100`.
+3. Run _Regenerate Bitmap Glyphs..._ (`cmd-B`) and keep Pixel Sizes to `100`.
 4. Run _Generate Fonts..._ (`cmd-shift-G`) and:
    1. Pick the `fonts` directory in this project
-   2. Select `No Outline Font`
-   3. Select `BDF`
-   4. Ignore _Options_
-   5. Ensure the size box is `100`
-   6. Click `Generate`
-   7. `Guess` the BDF Resolution
-   8. Hope it doesn't get into that stupid box dismiss loop thing
+   2. Name the font accurately, and keep the `.bdf` extension
+   3. Select `No Outline Font`
+   4. Select `BDF`
+   5. Ignore _Options_
+   6. Ensure the size box is `100`
+   7. Click `Generate`
+   8. `Guess` the BDF Resolution
+   9. Hope it doesn't get into that stupid box dismiss loop thing
 
 Copy it over:
 

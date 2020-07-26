@@ -13,7 +13,14 @@ from adafruit_pybadger import pybadger
 print("LOVE YOU FINN! 🐴")
 
 DISPLAY = board.DISPLAY
-FONT = bitmap_font.load_font('/fonts/OldStandardTT-Bold-100.bdf')
+FONTS = [
+  bitmap_font.load_font('/fonts/OldStandardTT-Bold-100.bdf'),
+  bitmap_font.load_font('/fonts/IndieFlower-Regular-100.bdf'),
+  bitmap_font.load_font('/fonts/LibreBaskerville-Bold-100.bdf'),
+  bitmap_font.load_font('/fonts/Mali-SemiBold-100.bdf'),
+  bitmap_font.load_font('/fonts/PatrickHand-Regular-100.bdf'),
+  bitmap_font.load_font('/fonts/Quicksand-SemiBold-100.bdf'),
+]
 PALETTE_SIZE = 2
 ALPHABET_UPPERCASE = list(map(chr, range(ord('A'), ord('Z')+1)))
 ALPHABET_LOWERCASE = list(map(chr, range(ord('a'), ord('z')+1)))
@@ -23,6 +30,7 @@ COLOR_PALETTES = [ # FG, BG
 ]
 
 paletteIndex = 0
+fontIndex = 0
 letterIndex = 0
 alphabet = ALPHABET_UPPERCASE
 
@@ -30,6 +38,7 @@ leftButton = Debouncer(lambda: pybadger.button.left == 0)
 rightButton = Debouncer(lambda: pybadger.button.right == 0)
 selectButton = Debouncer(lambda: pybadger.button.select == 0)
 aButton = Debouncer(lambda: pybadger.button.a == 0)
+bButton = Debouncer(lambda: pybadger.button.b == 0)
 
 def displayLetter():
   letter = alphabet[letterIndex]
@@ -40,7 +49,9 @@ def displayLetter():
   backgroundBitmap = displayio.Bitmap(DISPLAY.width, DISPLAY.height, PALETTE_SIZE)
   background = displayio.TileGrid(backgroundBitmap, pixel_shader=palette)
 
-  textLabel = label.Label(FONT, text=letter, color=palette[1])
+  font = FONTS[fontIndex]
+
+  textLabel = label.Label(font, text=letter, color=palette[1])
   textLabel.anchor_point = (0.5, 0.5)
   textLabel.anchored_position = (DISPLAY.width / 2, DISPLAY.height / 2)
 
@@ -60,6 +71,8 @@ def nextIndex():
 def previousIndex():
   return letterIndex - 1 if letterIndex > 0 else len(alphabet) - 1
 
+  # TODO: Collect garbage after 50 or so letter changes? Got out-of-memory on 'I' when cycling through all fonts for each letter.
+
 def forwardLetter():
   global letterIndex
   letterIndex = nextIndex()
@@ -75,14 +88,29 @@ def switchLetterCase():
   alphabet = ALPHABET_LOWERCASE if alphabet == ALPHABET_UPPERCASE else ALPHABET_UPPERCASE
 
 def selectRandomPalette():
+  if len(COLOR_PALETTES) < 2:
+    return
+
   global paletteIndex
   previousPaletteIndex = paletteIndex
 
   while paletteIndex == previousPaletteIndex:
     paletteIndex = random.randint(0, len(COLOR_PALETTES) - 1)
 
+def selectRandomFont():
+  # TODO: Just go in sequence instead?
+  if len(FONTS) < 2:
+    return
+
+  global fontIndex
+  previousFontIndex = fontIndex
+
+  while fontIndex == previousFontIndex:
+    fontIndex = random.randint(0, len(FONTS) - 1)
+
 def preloadLetter(letter):
-  label.Label(FONT, text=letter)
+  # TODO: Also preload next font? Both upper- and lower-case?
+  label.Label(FONTS[fontIndex], text=letter)
   print(letter, end='')
 
 displayLetter()
@@ -92,6 +120,7 @@ while True:
   rightButton.update()
   selectButton.update()
   aButton.update()
+  bButton.update()
 
   if leftButton.fell:
     backLetter()
@@ -104,4 +133,8 @@ while True:
 
   if aButton.fell:
     selectRandomPalette()
+    displayLetter()
+
+  if bButton.fell:
+    selectRandomFont()
     displayLetter()
